@@ -6,6 +6,11 @@ import java.io.*;
 import java.net.*;
 public class PluginInstance {
 
+    public int port;
+    public DatagramSocket dsocket;
+    public byte[] buffer;
+    public DatagramPacket packet;
+
     public long getTime(){
         return System.currentTimeMillis();
     }
@@ -34,4 +39,26 @@ public class PluginInstance {
         }
         return result.toString();
     }
+    public void setUpUDP() throws Exception{
+        this.port = 2000;
+        this.dsocket = new DatagramSocket(port);
+        this.buffer = new byte[2048];
+        this.packet = new DatagramPacket(buffer, buffer.length);
+    }
+
+
+    public String getUDPPacket() throws Exception{
+                // Wait to receive a datagram
+                this.dsocket.receive(packet);
+
+                // Convert the contents to a string, and display them
+                String msg = new String(buffer, 0, packet.getLength());
+
+                // Reset the length of the packet before reusing it.
+                this.packet.setLength(buffer.length);
+        return msg;
+    }
+
+
 }
+
